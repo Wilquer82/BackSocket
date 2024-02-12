@@ -22,10 +22,10 @@ module.exports = (io) => {
       console.log(usersActual);
       io.emit('usersOn', usersActual);
     })
-    socket.on('userExit', async(nickName) => { // Ouça o evento 'userExit'
+    socket.on('userExit', async (nickName) => {
       users = users.filter((item) => item !== nickName);
       await deleteUser(nickName); // Remova o usuário do banco de dados
-      io.emit('usersOn', users);    });
-
+      io.emit('usersOn', users);
+    });
   })
 }
