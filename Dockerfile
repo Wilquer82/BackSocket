@@ -39,7 +39,7 @@
 # CMD [ "npm", "run", "start" ]
 
 # Especificando a imagem de base com a versão desejada do Node.js
-FROM node:16
+FROM node:10.4
 
 # Criando o diretório para a aplicação
 WORKDIR /usr/src/app
