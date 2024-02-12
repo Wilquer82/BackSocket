@@ -3,7 +3,7 @@ const { MongoClient } = require('mongodb');
 require('dotenv').config();
 
 const OPTIONS = {
-  useNewUrlParser: true,
+  // useNewUrlParser: true,
   useUnifiedTopology: true,
 };
 
