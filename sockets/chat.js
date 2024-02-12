@@ -23,5 +23,10 @@ module.exports = (io) => {
       console.log(usersActual);
       io.emit('usersOn', usersActual);
     })
+    socket.on('userExit', nickName => { // Ouça o evento 'userExit'
+      users = users.filter((item) => item !== nickName);
+      io.emit('usersOn', users);
+    });
+
   })
 }
