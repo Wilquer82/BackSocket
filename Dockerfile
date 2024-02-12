@@ -42,7 +42,7 @@
 FROM node:lts-alpine
 
 # Criando o diretório para a aplicação
-WORKDIR /
+WORKDIR /usr/src/app
 
 # Copiando arquivos de dependência
 COPY package*.json ./
