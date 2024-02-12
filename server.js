@@ -3,7 +3,7 @@ const app = express();
 const { getMessages } = require('./controller/chatController');
 const server = require('http').createServer(app);
 const cors = require('cors')
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.PORT || 3001;
 
 const options = {
     methods: ['GET', 'POST'],
