@@ -39,7 +39,7 @@
 # CMD [ "npm", "run", "start" ]
 
 # Especificando a imagem de base com a versão desejada do Node.js
-FROM node:lts-alpine
+FROM node:8.19
 
 # Criando o diretório para a aplicação
 WORKDIR /usr/src/app
