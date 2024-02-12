@@ -54,7 +54,7 @@ RUN npm install
 COPY . .
 
 # A porta que o aplicativo irá rodar dentro do container
-EXPOSE 3002
+EXPOSE 8080
 
 # O comando para iniciar o aplicativo, por exemplo:
 CMD ["npm", "start"]
