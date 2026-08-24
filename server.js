@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const { getMessages } = require('./controller/chatController');
+const chatModel = require('./models/chatModel');
 const { createUser, findUser } = require('./models/userModel');
 const roomModel = require('./models/roomModel');
 const { sign, hashPassword, checkPassword, authenticate, authenticateRoom } = require('./auth');
@@ -104,6 +105,13 @@ app.patch('/rooms/:slug', authenticate, async (req, res) => {
   if (!room || room.ownerId !== req.user.userId) return res.status(403).json({ error: 'Apenas o dono pode bloquear a sala' });
   await roomModel.updateRoom(req.params.slug, { blocked: Boolean(req.body.blocked) });
   return res.json({ ok: true, blocked: Boolean(req.body.blocked) });
+});
+app.delete('/rooms/:slug', authenticate, async (req, res) => {
+  const room = await roomModel.findRoom(req.params.slug);
+  if (!room || room.ownerId !== req.user.userId) return res.status(403).json({ error: 'Apenas o dono pode apagar a sala' });
+  if (!(await checkPassword(String(req.body.password || ''), room.passwordHash))) return res.status(403).json({ error: 'Senha da sala incorreta' });
+  await Promise.all([roomModel.deleteRoom(req.params.slug), chatModel.deleteMessages(req.params.slug)]);
+  return res.json({ ok: true });
 });
 
 server.listen(PORT, '0.0.0.0', () => {

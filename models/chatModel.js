@@ -13,7 +13,13 @@ const getMessages = async (room) => {
   return db.collection('Chat').find({ room }).sort({ createdAt: -1 }).limit(30).toArray();
 };
 
+const deleteMessages = async (room) => {
+  const db = await connection();
+  return db.collection('Chat').deleteMany({ room });
+};
+
 module.exports = {
   saveMessage,
   getMessages,
+  deleteMessages,
 };

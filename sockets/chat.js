@@ -48,6 +48,7 @@ module.exports = (io) => {
       if (!room || !ciphertext || !iv || !socket.data.nickName) return done({ ok: false, error: 'Mensagem inválida' });
       const message = { room, nickName: socket.data.nickName, ciphertext, iv, time: new Date().toISOString() };
       try {
+        if (!(await roomModel.findRoom(room))) return done({ ok: false, error: 'Sala indisponível' });
         await saveMessage(message);
         io.to(room).emit('message', message);
         done({ ok: true });

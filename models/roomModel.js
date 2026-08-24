@@ -6,5 +6,6 @@ const createRoom = async (room) => (await collection()).insertOne({ ...room, blo
 const findRoom = async (slug) => (await collection()).findOne({ slug });
 const listRooms = async () => (await collection()).find({ hidden: { $ne: true }, blocked: false }).project({ passwordHash: 0 }).sort({ createdAt: -1 }).toArray();
 const updateRoom = async (slug, update) => (await collection()).updateOne({ slug }, { $set: update });
+const deleteRoom = async (slug) => (await collection()).deleteOne({ slug });
 
-module.exports = { createRoom, findRoom, listRooms, updateRoom, publicRoom };
+module.exports = { createRoom, findRoom, listRooms, updateRoom, deleteRoom, publicRoom };
