@@ -14,19 +14,28 @@ const PORT = process.env.PORT || 8080;
 if (process.env.NODE_ENV === 'production' && (!process.env.AUTH_SECRET || !process.env.GHOST_ADMIN_SECRET)) {
   throw new Error('AUTH_SECRET e GHOST_ADMIN_SECRET devem ser configurados em produção');
 }
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
-  .split(',').map((origin) => origin.trim()).filter(Boolean);
+const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000,https://webchat-mongo-socket-io-nodejs-reactjs.onrender.com,http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const options = {
-    methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
-    origin: allowedOrigins,
-    credentials: true,
-    optionsSuccessStatus: 204,
-  }
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
 
-  
+    callback(new Error('Origin not allowed by CORS'));
+  },
+  methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
 
 app.use(cors(options));
+app.options('*', cors(options));
 app.use(helmet());
 
 app.use(express.json({ limit: '32kb' }));
