@@ -1,53 +1,25 @@
 const chatModel = require('../models/chatModel'); 
-const userModel = require('../models/userModel');
 
 
-async function saveMessage({ nickName, message, time }) {
-  try {
-    await chatModel.saveMessage(nickName, message, time);
-  } catch (error) {
-    console.log(error);
-  }
+async function saveMessage({ room, nickName, ciphertext, iv, time }) {
+  return chatModel.saveMessage(room, nickName, ciphertext, iv, time);
 }
 
-async function getMessages(_req, res) {
+async function getMessages(req, res) {
   try {
-    const result = await chatModel.getMessages();
+    const room = String(req.query.room || '').trim();
+    if (!/^[a-zA-Z0-9_-]{1,40}$/.test(room)) {
+      return res.status(400).json({ error: 'Sala inválida' });
+    }
+    const result = await chatModel.getMessages(room);
     return res.status(200).json(result);
   } catch (error) {
     console.log(error);
-  }
-}
-
-async function saveUser(nickName) {
-  try {
-    await userModel.saveUser(nickName);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getUsers(_req, res) {
-  try {
-    const result = await userModel.getUsers();
-    return res.status(200).json(result);
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function deleteUser(nickName) {
-  try {
-    await userModel.deleteUser(nickName);
-  } catch (error) {
-    console.log(error);
+    return res.status(500).json({ error: 'Não foi possível carregar as mensagens' });
   }
 }
 
 module.exports = {
   saveMessage,
   getMessages,
-  saveUser,
-  getUsers,
-  deleteUser,
 };

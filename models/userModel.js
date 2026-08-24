@@ -1,24 +1,18 @@
 // userModel.js
 const connection = require('./connection');
+const { ObjectId } = require('mongodb');
 
-const saveUser = async (nickName) => {
+const createUser = async (nickName, passwordHash) => {
   const db = await connection();
-  const newUser = await db.collection('users').insertOne({ nickName });
-  return newUser;
+  return db.collection('users').insertOne({ _id: new ObjectId(), nickName, passwordHash, createdAt: new Date() });
 };
 
-const getUsers = async () => {
+const findUser = async (nickName) => {
   const db = await connection();
-  return db.collection('users').find().toArray();
-};
-
-const deleteUser = async (nickName) => {
-  const db = await connection();
-  return db.collection('users').deleteOne({ nickName });
+  return db.collection('users').findOne({ nickName });
 };
 
 module.exports = {
-  saveUser,
-  getUsers,
-  deleteUser,
+  createUser,
+  findUser,
 };
