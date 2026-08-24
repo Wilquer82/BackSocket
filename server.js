@@ -14,10 +14,16 @@ const PORT = process.env.PORT || 8080;
 if (process.env.NODE_ENV === 'production' && (!process.env.AUTH_SECRET || !process.env.GHOST_ADMIN_SECRET)) {
   throw new Error('AUTH_SECRET e GHOST_ADMIN_SECRET devem ser configurados em produção');
 }
-const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000,https://webchat-mongo-socket-io-nodejs-reactjs.onrender.com,http://localhost:5173')
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://webchat-mongo-socket-io-nodejs-reactjs.onrender.com',
+];
+const configuredOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
-  .map((origin) => origin.trim())
+  .map((origin) => origin.trim().replace(/^['"]|['"]$/g, '').replace(/\/$/, ''))
   .filter(Boolean);
+const allowedOrigins = [...new Set([...defaultOrigins, ...configuredOrigins])];
 
 const options = {
   origin: (origin, callback) => {
