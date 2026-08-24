@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: chatsocket-backend
+    runtime: node
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_URL
+        sync: false
+      - key: DB_NAME
+        value: Chat
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: GHOST_ADMIN_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        sync: false

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
 const { getMessages } = require('./controller/chatController');
@@ -84,6 +86,6 @@ app.patch('/rooms/:slug', authenticate, async (req, res) => {
   return res.json({ ok: true, blocked: Boolean(req.body.blocked) });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Porta ${PORT}`);
 });

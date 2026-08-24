@@ -39,7 +39,7 @@
 # CMD [ "npm", "run", "start" ]
 
 # Especificando a imagem de base com a versão desejada do Node.js
-FROM node:16.20.2
+FROM node:20-slim
 
 # Criando o diretório para a aplicação
 WORKDIR /usr/src/app
@@ -48,7 +48,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # Instalando as dependências do aplicativo incluindo 'npm' no caso de haver scripts personalizados e hooks do Git.
-RUN npm install
+RUN npm ci --omit=dev
 
 # Copiando os arquivos do aplicativo Node.js para o container
 COPY . .
