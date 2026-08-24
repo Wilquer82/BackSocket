@@ -21,7 +21,7 @@ const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000,https:
 
 const options = {
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
       callback(null, true);
       return;
     }
@@ -56,12 +56,17 @@ app.get('/', authenticate, authenticateRoom, getMessages);
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
 app.post('/auth/register', async (req, res) => {
-  const nickName = String(req.body.nickName || '').trim();
-  const password = String(req.body.password || '');
-  if (!/^[\p{L}0-9 _-]{2,30}$/u.test(nickName) || password.length < 8) return res.status(400).json({ error: 'Apelido ou senha inválidos' });
-  if (await findUser(nickName)) return res.status(409).json({ error: 'Esse apelido já está cadastrado' });
-  const result = await createUser(nickName, await hashPassword(password));
-  return res.status(201).json({ token: sign({ userId: result.insertedId.toString(), nickName }), userId: result.insertedId.toString(), nickName });
+  try {
+    const nickName = String(req.body.nickName || '').trim();
+    const password = String(req.body.password || '');
+    if (!/^[\p{L}0-9 _-]{2,30}$/u.test(nickName) || password.length < 8) return res.status(400).json({ error: 'Apelido ou senha inválidos' });
+    if (await findUser(nickName)) return res.status(409).json({ error: 'Esse apelido já está cadastrado' });
+    const result = await createUser(nickName, await hashPassword(password));
+    return res.status(201).json({ token: sign({ userId: result.insertedId.toString(), nickName }), userId: result.insertedId.toString(), nickName });
+  } catch (error) {
+    console.error('Falha ao cadastrar usuário:', error.message);
+    return res.status(503).json({ error: 'Banco de dados indisponível' });
+  }
 });
 
 app.post('/auth/login', async (req, res) => {
